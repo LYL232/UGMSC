@@ -1,0 +1,9 @@
+.idea
+__pycache__
+*.bin
+*.zip
+*.bin
+*.txt
+!requirements.txt
+*.tar.gz
+*.log
