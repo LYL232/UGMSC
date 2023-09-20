@@ -1,9 +1,12 @@
-#-*-coding:utf8-*-
-import sys, os
-import numpy as np
-import time
+# -*-coding:utf8-*-
+import os
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
+
 
 def score_f(ans, print_flg=False, only_check=False, out_dir=''):
     fout = open('%s/pred.txt' % out_dir, 'w', encoding="utf-8")
@@ -14,8 +17,8 @@ def score_f(ans, print_flg=False, only_check=False, out_dir=''):
     assert len(golds) == len(preds)
     for ori, god, prd in zip(inputs, golds, preds):
         ori_txt = str(ori)
-        god_txt = str(god) #''.join(list(map(str, god)))
-        prd_txt = str(prd) #''.join(list(map(str, prd)))
+        god_txt = str(god)  # ''.join(list(map(str, god)))
+        prd_txt = str(prd)  # ''.join(list(map(str, prd)))
         if print_flg is True:
             print(ori_txt, '\t', god_txt, '\t', prd_txt)
         if 'UNK' in ori_txt:
@@ -23,7 +26,7 @@ def score_f(ans, print_flg=False, only_check=False, out_dir=''):
         if ori_txt == god_txt and ori_txt == prd_txt:
             continue
         if prd_txt != god_txt:
-            fout.writelines('%s\t%s\t%s\n' % (ori_txt, god_txt, prd_txt)) 
+            fout.writelines('%s\t%s\t%s\n' % (ori_txt, god_txt, prd_txt))
         if ori != god:
             total_gold_err += 1
         if prd != ori:
@@ -34,20 +37,20 @@ def score_f(ans, print_flg=False, only_check=False, out_dir=''):
                 right_pred_err += 1
     fout.close()
 
-    #check p, r, f
+    # check p, r, f
     p = 1. * check_right_pred_err / (total_pred_err + 0.001)
     r = 1. * check_right_pred_err / (total_gold_err + 0.001)
-    f = 2 * p * r / (p + r +  1e-13)
-    print('token check: p=%.3f, r=%.3f, f=%.3f' % (p, r, f))
+    f = 2 * p * r / (p + r + 1e-13)
+    logger.info('token check: p=%.6f, r=%.6f, f=%.6f' % (p, r, f))
     if only_check is True:
         return p, r, f
 
-    #correction p, r, f
-    #p = 1. * right_pred_err / (total_pred_err + 0.001)
+    # correction p, r, f
+    # p = 1. * right_pred_err / (total_pred_err + 0.001)
     pc = 1. * right_pred_err / (check_right_pred_err + 0.001)
     rc = 1. * right_pred_err / (total_gold_err + 0.001)
-    fc = 2 * pc * rc / (pc + rc + 1e-13) 
-    print('token correction: p=%.3f, r=%.3f, f=%.3f' % (pc, rc, fc))
+    fc = 2 * pc * rc / (pc + rc + 1e-13)
+    logger.info('token correction: p=%.6f, r=%.6f, f=%.6f' % (pc, rc, fc))
     return p, r, f
 
 
@@ -66,8 +69,8 @@ def score_f_py(ans_py, ans_zi, out_dir, print_flg=False, only_check=False):
     for ori, god, prd in zip(inputs_z, golds_z, preds_z):
         index += 1
         ori_txt = str(ori)
-        god_txt = str(god) #''.join(list(map(str, god)))
-        prd_txt = str(prd) #''.join(list(map(str, prd)))
+        god_txt = str(god)  # ''.join(list(map(str, god)))
+        prd_txt = str(prd)  # ''.join(list(map(str, prd)))
         if print_flg is True:
             print(ori_txt, '\t', god_txt, '\t', prd_txt)
         if 'UNK' in ori_txt:
@@ -81,36 +84,35 @@ def score_f_py(ans_py, ans_zi, out_dir, print_flg=False, only_check=False):
             end_idx = index + 5
             if end_idx > total_len: end_idx = total_len
             for _idx in range(start_idx, end_idx, 1):
-                fout.writelines('%s\t%s\t%s\t%s\t%s\t%s\n' % (inputs_z[_idx], golds_z[_idx], preds_z[_idx], inputs[_idx], golds[_idx], preds[_idx])) 
+                fout.writelines('%s\t%s\t%s\t%s\t%s\t%s\n' % (
+                    inputs_z[_idx], golds_z[_idx], preds_z[_idx], inputs[_idx], golds[_idx], preds[_idx]))
             fout.writelines('\n')
         if ori != god:
             total_gold_err += 1
         if (prd != ori) or (prd_py != ori_py):
             total_pred_err += 1
-        
+
         if (ori != god) and ((prd != ori) or (prd_py != ori_py)):
             check_right_pred_err += 1
             if god_py == prd_py:
                 right_pred_err += 1
     fout.close()
 
-    #check p, r, f
+    # check p, r, f
     p = 1. * check_right_pred_err / (total_pred_err + 0.001)
     r = 1. * check_right_pred_err / (total_gold_err + 0.001)
-    f = 2 * p * r / (p + r +  1e-13)
-    print('token check: p=%.3f, r=%.3f, f=%.3f' % (p, r, f))
+    f = 2 * p * r / (p + r + 1e-13)
+    logger.info('token check: p=%.6f, r=%.6f, f=%.6f' % (p, r, f))
     if only_check is True:
         return p, r, f
 
-    #correction p, r, f
-    #p = 1. * right_pred_err / (total_pred_err + 0.001)
+    # correction p, r, f
+    # p = 1. * right_pred_err / (total_pred_err + 0.001)
     pc = 1. * right_pred_err / (check_right_pred_err + 0.001)
     rc = 1. * right_pred_err / (total_gold_err + 0.001)
-    fc = 2 * pc * rc / (pc + rc + 1e-13) 
-    print('token correction: p=%.3f, r=%.3f, f=%.3f' % (pc, rc, fc))
+    fc = 2 * pc * rc / (pc + rc + 1e-13)
+    logger.info('token correction: p=%.6f, r=%.6f, f=%.6f' % (pc, rc, fc))
     return p, r, f
-
-
 
 
 def score_f_sent(inputs, golds, preds):
@@ -125,7 +127,7 @@ def score_f_sent(inputs, golds, preds):
         gold_errs = [idx for (idx, tk) in enumerate(god_tags) if tk != ori_tags[idx]]
         pred_errs = [idx for (idx, tk) in enumerate(prd_tags) if tk != ori_tags[idx]]
         if len(gold_errs) > 0 or len(pred_errs) > 0:
-            fout.writelines('\n%s\n%s\n%s\n' % ('|'.join(ori_tags), '|'.join(god_tags),'|'.join(prd_tags)))
+            fout.writelines('\n%s\n%s\n%s\n' % ('|'.join(ori_tags), '|'.join(god_tags), '|'.join(prd_tags)))
         if len(gold_errs) > 0:
             total_gold_err += 1
             fout.writelines('gold_err\n')
@@ -142,10 +144,11 @@ def score_f_sent(inputs, golds, preds):
     p = 1. * check_right_pred_err / total_pred_err
     r = 1. * check_right_pred_err / total_gold_err
     f = 2 * p * r / (p + r + 1e-13)
-    #print(total_gold_err, total_pred_err, right_pred_err, check_right_pred_err)
-    print('sent check: p=%.3f, r=%.3f, f=%.3f' % (p, r, f))
+    # print(total_gold_err, total_pred_err, right_pred_err, check_right_pred_err)
+    logger.info('sent check: p=%.6f, r=%.6f, f=%.6f' % (p, r, f))
     p = 1. * right_pred_err / total_pred_err
     r = 1. * right_pred_err / total_gold_err
     f = 2 * p * r / (p + r + 1e-13)
-    print('sent correction: p=%.3f, r=%.3f, f=%.3f' % (p, r, f))
+    logger.info('sent correction: p=%.6f, r=%.6f, f=%.6f' % (p, r, f))
     return p, r, f
+

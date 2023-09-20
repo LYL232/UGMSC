@@ -1,14 +1,49 @@
-# PLOME_finetune_pytorch
-最近在学习PLOME:Pre-training with Misspelled Knowledge for Chinese Spelling Correction (ACL2021)，由于对tensorflow代码不熟悉，加上项目中的其他代码都是pytorch写的，因此尝试在pytorch中实现了论文的finetune部分。  
-  
-请先运行change_model_tf2torch/tf2torch.py转换tensorflow权重放置到datas\pretrained_plome下，权重下载见[tensorflow代码](https://github.com/liushulinle/PLOME)。
-  
-然后运行main.py开始训练。
-  
-tensorflow模型权重中有部分权重缺失，没有转换为pytorch权重，最后结果和原文相比稍低。  
-  
-个人能力有限，如有错误请指出。  
-  
-[原文](https://aclanthology.org/2021.acl-long.233.pdf)  
-[tensorflow代码](https://github.com/liushulinle/PLOME)
+# UGMSC-PLOME
 
+This code is the PyTorch reimplementation of [PLOME](https://github.com/liushulinle/PLOME) finetune part, and employed UGMSC framework. The code are modified from repository: [PLOME_finetune_pytorch](https://github.com/Zhouyuhao97/PLOME_finetune_pytorch). 
+
+## Requirements
+
+It is recommended to directly use the environment of UGMSC-ReaLiSe model, please refer to the requirements of the UGMSC-ReaLiSe model.
+
+## Instructions
+
+1. Download the pre-trained model from the PLOME official repository: https://drive.google.com/file/d/1aip_siFdXynxMz6-2iopWvJqr5jtUu3F/view?usp=sharing or https://share.weiyun.com/OREEY0H3
+
+2. Extract the data in this dictionary, then the `datas/pretrained_plome/` directory would look like this:
+
+   ```
+   datas/pretrained_plome
+   |- bert_config.json
+   |- bert_model.ckpt.data-00000-of-00001
+   |- bert_model.ckpt.index
+   |- bert_model.ckpt.meta
+   |- checkpoint
+   |- vocab.txt
+   ```
+
+3. copy/rename the `bert_config.json`  to `config.json`, so that the code can recognize the config:
+
+   ```bash
+   cp datas/pretrained_plome/bert_config.json datas/pretrained_plome/config.json
+   ```
+
+4. Transform the Tensorflow weights to PyTorch:
+
+   ```bash
+   python tf2torch.py
+   ```
+
+   Then there should be a file named `pytorch_model.bin` in the `datas/pretrained_plome/` directory.
+
+5. The command to train the reimplemented PLOME model:
+
+   ```bash
+   python main.py --model_type=plome
+   ```
+
+   The command to train the UGMSC-PLOME model with 3 corrector layers:
+
+   ```bash
+   python main.py --model_type=ug --corrector_layers 3
+   ```
