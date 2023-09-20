@@ -22,7 +22,6 @@ import os
 import sys
 
 import torch
-from torchcrf import CRF
 from torch import nn
 from torch.nn import CrossEntropyLoss, MSELoss
 

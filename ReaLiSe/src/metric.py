@@ -19,8 +19,7 @@ class Metric:
             )
         scores = metric_file(
             pred_path=pred_lbl_path,
-            targ_path=label_path,
-            do_char_metric=False,
+            targ_path=label_path
         )
         return scores
 
