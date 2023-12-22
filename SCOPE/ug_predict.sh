@@ -2,19 +2,21 @@
 # -*- coding: utf-8 -*-
 
 REPO_PATH=/path/to/SCOPE
-BERT_PATH=/path/to/SCOPE/FPT
+BERT_PATH=$REPO_PATH/UGFPT
 DATA_DIR=$REPO_PATH/data
 export PYTHONPATH="$PYTHONPATH:$REPO_PATH"
 
-ckpt_path=outputs/bs32epoch30/checkpoint/epoch=25-df=80.6798-cf=78.3542.ckpt
+ckpt_path=ug_outputs/bs32epoch30/checkpoint/epoch=14-df=80.1105-cf=78.8214.ckpt
 
-OUTPUT_DIR=outputs/predict
+OUTPUT_DIR=ug_outputs/predict
 mkdir -p $OUTPUT_DIR
 
-python -u finetune/predict.py \
+python -u finetune/ug_predict.py \
   --bert_path $BERT_PATH \
   --ckpt_path $ckpt_path \
   --data_dir $DATA_DIR \
   --save_path $OUTPUT_DIR \
   --label_file $DATA_DIR/test.sighan15.lbl.tsv \
   --gpus=0,
+
+

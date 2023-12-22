@@ -7,7 +7,6 @@ python_Levenshtein==0.20.5
 pytorch_lightning==1.5.1
 regex==2021.10.8
 tokenizers==0.10.3
-torch==1.9.1
 torchmetrics==0.6.0
 tqdm==4.62.3
 transformers==4.12.5
