@@ -28,7 +28,7 @@ pip install setuptools==59.5.0
 
 ## Instructions
 
-1. Download the pre-trained model from the SCOPE official repository: https://rec.ustc.edu.cn/share/18549500-4936-11ed-bdbb-75a980e00e16and  and unzip it (FPT.zip).
+1. Download the pre-trained model from the SCOPE official repository: https://rec.ustc.edu.cn/share/18549500-4936-11ed-bdbb-75a980e00e16 and unzip it (FPT.zip).
 
 2. Download the processed data from the SCOPE official repository: https://rec.ustc.edu.cn/share/b8470c00-4884-11ed-abb5-01b9f59aa971 and unzip it (data.zip).
 
